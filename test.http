@@ -1,0 +1,38 @@
+@hostname = http://localhost:3000
+
+POST {{hostname}}/api/shorturl
+Content-Type: application/json
+
+{
+    "url": "https://www.google.com/search?q=javascript+url&rlz=1C1CHZN_enSA963SA963&oq=javascript+url&aqs=chrome..69i57j0i512l9.8613j1j7&sourceid=chrome&ie=UTF-8"
+}
+
+###
+POST {{hostname}}/api/shorturl
+Content-Type: application/json
+
+{
+    "url": "https://boilerplate-project-urlshortener.abdullahsb2020.repl.co/?v=1629272127102"
+}
+
+###
+POST {{hostname}}/api/shorturl
+Content-Type: application/json
+
+{
+    "url": "https://boilerplate-project-urlshortener.abdullahsb2020.repl.co/?v=1629272128867"
+}
+
+###
+POST {{hostname}}/api/shorturl
+Content-Type: application/json
+
+{
+    "url": "ftp:/john-doe.org"
+}
+
+###
+GET {{hostname}}/api/shorturl/1629440827755 
+
+###
+GET {{hostname}}/api/shorturl/1629440832146 
