@@ -32,7 +32,16 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{hostname}}/api/shorturl
+Content-Type: application/json
+
+{
+    "url": "http://john-doe.org"
+}
+
+###
 GET {{hostname}}/api/shorturl/1629440827755 
 
 ###
-GET {{hostname}}/api/shorturl/1629440832146 
+GET {{hostname}}/api/shorturl/162944082146 

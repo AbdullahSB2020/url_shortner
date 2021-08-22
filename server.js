@@ -43,20 +43,35 @@ app.get('/', function(req, res) {
 });
 
 app.post('/api/shorturl', (req, res) => {
-  
-  let url = new URL(req.body.url);
-  console.log(url)
-  console.log(!url.protocol.includes('https'));
+  console.log('url is:',`{${req.body.url}}`)
 
-  if(!url) return res.status(400).send({error: 'invalid url'}) 
-  if(!url.protocol.includes('https') || !url.protocol.includes('http')) return res.status(400).send({error: 'Invalid URL'})
-  if(!url.host.includes('www'))return res.status(400).send({error: 'Invalid URL'})
+  let urlRegex = new RegExp(
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi
+  );
+
+  if (!req.body.url.match(urlRegex)) {
+    console.log('won\'t work')
+    return res.status(400).json({ error: "invalid URL" });
+  }
+  // if(!isValidHttpUrl(req.body.url)){
+  //   console.log('we don\' have thing')
+  //   return res.status(400).json({ error: "invalid URL" });
+  // }
+
+  if( req.body.url === "")  return res.status(400).send({error: 'invalid url'});
+
+  let url = new URL(req.body.url);
+
+  
+  // if(!url)  return res.status(400).send({error: 'bb invalid url'});
+  // if (!url.protocol.includes('http')) return res.status(400).send({error: 'dd invalid url'})
+
   console.log('\tpassing tests')
   
   dns.lookup(url.hostname,(err, address, family) => {
 
     // err will have null value so might considered false
-    if(err) return res.status(400).send({error: 'invalid url'})
+    if(err) return res.status(400).send({error: 'aa invalid url'})
 
     Url.findOne({original_url: url.href},(err, data)=>{
 
@@ -66,7 +81,7 @@ app.post('/api/shorturl', (req, res) => {
       else {
         let initailUrl = new Url({
           original_url : url.href,
-          short_url: Date.now()
+          short_url:  Date.now()
         })
     
         initailUrl.save((err, data) => {
@@ -98,3 +113,26 @@ app.get('/api/shorturl/:shorturl', (req, res) => {
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);
 });
+
+function isValidHttpUrl(string) {
+  let url;
+  
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;  
+  }
+  string = string.substring(0,10)
+  var count = (string.match(/\//g) || []).length;
+  console.log(count);
+  return count == 2 && (url.protocol === "http:" || url.protocol === "https:");
+}
+
+/**
+ * If you pass an invalid URL that doesn't follow the 
+ * valid http://www.example.com format, 
+ * the JSON response will contain { error: 'invalid url' }
+ * -------------------------------------------------------
+ * ftp:/john-doe.org
+ * http://www.example.com
+ */
